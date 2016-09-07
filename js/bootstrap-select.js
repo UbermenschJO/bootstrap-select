@@ -290,6 +290,7 @@
   Selectpicker.DEFAULTS = {
     noneSelectedText: 'Nothing selected',
     noneResultsText: 'No results matched {0}',
+    minimumInputLengthText: 'Please enter {0} or more characters',
     countSelectedText: function (numSelected, numTotal) {
       return (numSelected == 1) ? "{0} item selected" : "{0} items selected";
     },
@@ -1172,7 +1173,7 @@
     },
 
     tabIndex: function () {
-      if (this.$element.data('tabindex') !== this.$element.attr('tabindex') && 
+      if (this.$element.data('tabindex') !== this.$element.attr('tabindex') &&
         (this.$element.attr('tabindex') !== -98 && this.$element.attr('tabindex') !== '-98')) {
         this.$element.data('tabindex', this.$element.attr('tabindex'));
         this.$button.attr('tabindex', this.$element.data('tabindex'));
@@ -1401,7 +1402,32 @@
       });
 
       this.$searchbox.on('input propertychange', function () {
-        if (that.$searchbox.val()) {
+        var searchBoxVal = that.$searchbox.val();
+        var valLength = $.trim(searchBoxVal).length;
+
+        var minimumInputLength = that.options.minimumInputLength;
+        if( valLength > 0
+            && minimumInputLength > 0
+            && valLength < minimumInputLength ) {
+          that.$lis.addClass('hidden');
+
+          if (!!$no_results.parent().length) {
+            $no_results.remove();
+          }
+
+          var lengthDelta = minimumInputLength - valLength;
+          var minimumInputLengthText = that.options.minimumInputLengthText;
+          if($.isFunction(minimumInputLengthText)) {
+            minimumInputLengthText = that.options.minimumInputLengthText(lengthDelta, minimumInputLength, valLength);
+          }
+          else {
+            minimumInputLengthText = minimumInputLengthText.replace('{0}', '"' + (lengthDelta) + '"');
+          }
+          $no_results.html(minimumInputLengthText).show();
+          that.$menuInner.append($no_results);
+        }
+        else
+        if (searchBoxVal) {
           var $searchBase = that.$lis.not('.is-hidden').removeClass('hidden').children('a');
           if (that.options.liveSearchNormalize) {
             $searchBase = $searchBase.not(':a' + that._searchStyle() + '("' + normalizeToBase(that.$searchbox.val()) + '")');
@@ -1486,13 +1512,13 @@
           $lisVisible = this.$lis.not('.divider, .dropdown-header, .disabled, .hidden'),
           lisVisLen = $lisVisible.length,
           selectedOptions = [];
-          
+
       if (status) {
         if ($lisVisible.filter('.selected').length === $lisVisible.length) return;
       } else {
         if ($lisVisible.filter('.selected').length === 0) return;
       }
-          
+
       $lisVisible.toggleClass('selected', status);
 
       for (var i = 0; i < lisVisLen; i++) {
