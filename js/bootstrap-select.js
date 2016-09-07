@@ -1128,7 +1128,7 @@
     },
 
     tabIndex: function () {
-      if (this.$element.data('tabindex') !== this.$element.attr('tabindex') && 
+      if (this.$element.data('tabindex') !== this.$element.attr('tabindex') &&
         (this.$element.attr('tabindex') !== -98 && this.$element.attr('tabindex') !== '-98')) {
         this.$element.data('tabindex', this.$element.attr('tabindex'));
         this.$button.attr('tabindex', this.$element.data('tabindex'));
@@ -1359,7 +1359,9 @@
         var valLength = $.trim(searchBoxVal).length;
 
         var minimumInputLength = that.options.minimumInputLength;
-        if( minimumInputLength > 0 && valLength < minimumInputLength ) {
+        if( valLength > 0
+            && minimumInputLength > 0
+            && valLength < minimumInputLength ) {
           that.$lis.addClass('hidden');
 
           if (!!$no_results.parent().length) {
@@ -1463,13 +1465,13 @@
           $lisVisible = this.$lis.not('.divider, .dropdown-header, .disabled, .hidden'),
           lisVisLen = $lisVisible.length,
           selectedOptions = [];
-          
+
       if (status) {
         if ($lisVisible.filter('.selected').length === $lisVisible.length) return;
       } else {
         if ($lisVisible.filter('.selected').length === 0) return;
       }
-          
+
       $lisVisible.toggleClass('selected', status);
 
       for (var i = 0; i < lisVisLen; i++) {
